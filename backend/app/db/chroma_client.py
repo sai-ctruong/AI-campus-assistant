@@ -28,6 +28,16 @@ def query(query_embedding: list[float], top_k: int = 5, document_id: Optional[st
     where = {"document_id": document_id} if document_id else None
     return collection.query(query_embeddings=[query_embedding], n_results=top_k, where=where)
 
+def get_document_chunks(document_id: Optional[str] = None) -> list[dict]:
+    """Lấy toàn bộ chunk (text + metadata) của 1 document — dùng để build BM25 index."""
+    collection = get_collection()
+    where = {"document_id": document_id} if document_id else None
+    res = collection.get(where=where, include=["documents", "metadatas"])
+    return [
+        {"id": _id, "text": doc, "metadata": meta}
+        for _id, doc, meta in zip(res["ids"], res["documents"], res["metadatas"])
+    ]
+
 def delete_document(document_id: str) -> None:
     collection = get_collection()
     collection.delete(where={"document_id": document_id})
