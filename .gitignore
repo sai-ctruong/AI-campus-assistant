@@ -15,5 +15,7 @@ CLAUDE.md
 # data
 data/uploads/*
 data/chroma/*
+data/documents.json
+data/chat_history.json
 !data/uploads/.gitkeep
 !data/chroma/.gitkeep

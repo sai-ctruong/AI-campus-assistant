@@ -2,8 +2,10 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     gemini_api_key: str
+    data_dir: str = "../data"
     chroma_persist_dir: str = "../data/chroma"
     upload_dir: str = "../data/uploads"
+    max_upload_mb: int = 50
     database_url: str = "postgresql://postgres:postgres@localhost:5432/campus_assistant"
     cors_origins: list[str] = ["http://localhost:5173"]
 
