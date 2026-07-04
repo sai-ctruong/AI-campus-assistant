@@ -1,3 +1,200 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import "@fontsource-variable/plus-jakarta-sans";
+@import "@fontsource-variable/lora";
+@import "material-symbols/outlined.css";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* =========================================================================
+   DESIGN SYSTEM (theo 5 ảnh tham chiếu)
+   primary = xanh lá rừng · navy = màu tối/ink · warning = amber · heading = serif
+   ========================================================================= */
+:root {
+  --primary: #1f7a55;
+  --on-primary: #ffffff;
+  --primary-container: #d7f0e1;
+  --on-primary-container: #05351f;
+  --primary-hover: #1a6848;
+
+  --secondary: #0e8a86; /* teal cho chip trích dẫn */
+  --on-secondary: #ffffff;
+  --secondary-container: #bfeae4;
+  --on-secondary-container: #00201d;
+
+  --navy: #182338; /* nút tối, bong bóng user, banner, code */
+  --on-navy: #ffffff;
+  --navy-soft: #232f47;
+
+  --warning: #b7791f;
+  --on-warning: #ffffff;
+  --warning-container: #f8ecd2;
+  --on-warning-container: #47340f;
+
+  --background: #f6f7f9;
+  --surface: #ffffff;
+  --surface-container: #eef0f3;
+  --surface-container-low: #f3f4f6;
+  --on-surface: #1b1d22;
+  --on-surface-variant: #565a61;
+  --outline: #9aa0a6;
+  --outline-variant: #e4e6ea;
+
+  --error: #ba1a1a;
+  --highlight: #f6e6c4;
+}
+
+:where(.dark) {
+  --primary: #6fd7a4;
+  --on-primary: #04351f;
+  --primary-container: #14543a;
+  --on-primary-container: #c4f2d8;
+  --primary-hover: #7fe0b0;
+
+  --secondary: #57d6cf;
+  --on-secondary: #00201d;
+  --secondary-container: #024f4b;
+  --on-secondary-container: #bfeae4;
+
+  --navy: #0f1626;
+  --on-navy: #eaf0f7;
+  --navy-soft: #1b2740;
+
+  --warning: #e6b566;
+  --on-warning: #3a2a08;
+  --warning-container: #4a3410;
+  --on-warning-container: #f8ecd2;
+
+  --background: #101317;
+  --surface: #181b20;
+  --surface-container: #202429;
+  --surface-container-low: #14171b;
+  --on-surface: #e3e2e6;
+  --on-surface-variant: #c2c6cd;
+  --outline: #8b9098;
+  --outline-variant: #2c3037;
+
+  --error: #ffb4ab;
+  --highlight: #4a3f1e;
+}
+
+@theme inline {
+  --font-sans: "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Lora Variable", Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, "SF Mono", Consolas, monospace;
+
+  --color-primary: var(--primary);
+  --color-on-primary: var(--on-primary);
+  --color-primary-container: var(--primary-container);
+  --color-on-primary-container: var(--on-primary-container);
+  --color-primary-hover: var(--primary-hover);
+  --color-secondary: var(--secondary);
+  --color-on-secondary: var(--on-secondary);
+  --color-secondary-container: var(--secondary-container);
+  --color-on-secondary-container: var(--on-secondary-container);
+  --color-navy: var(--navy);
+  --color-on-navy: var(--on-navy);
+  --color-navy-soft: var(--navy-soft);
+  --color-warning: var(--warning);
+  --color-on-warning: var(--on-warning);
+  --color-warning-container: var(--warning-container);
+  --color-on-warning-container: var(--on-warning-container);
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-container: var(--surface-container);
+  --color-surface-container-low: var(--surface-container-low);
+  --color-on-surface: var(--on-surface);
+  --color-on-surface-variant: var(--on-surface-variant);
+  --color-outline: var(--outline);
+  --color-outline-variant: var(--outline-variant);
+  --color-error: var(--error);
+
+  /* alias cho component cũ */
+  --color-ink: var(--on-surface);
+  --color-muted: var(--on-surface-variant);
+  --color-faint: var(--outline);
+  --color-line: var(--outline-variant);
+  --color-surface-2: var(--surface-container);
+  --color-raised: var(--surface);
+  --color-accent: var(--primary);
+  --color-accent-ink: var(--on-primary);
+
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-base: 0.75rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+
+  --text-label-md: 0.75rem;
+  --text-label-md--line-height: 1rem;
+  --text-body-md: 0.9375rem;
+  --text-body-md--line-height: 1.5rem;
+  --text-title-md: 1.125rem;
+  --text-title-md--line-height: 1.5rem;
+  --text-headline-sm: 1.5rem;
+  --text-headline-sm--line-height: 2rem;
+  --text-headline-md: 1.875rem;
+  --text-headline-md--line-height: 2.25rem;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  color: var(--on-surface);
+  background: var(--background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Heading academic = serif */
+.font-serif {
+  font-family: var(--font-serif);
+  letter-spacing: -0.01em;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+  user-select: none;
+}
+.material-symbols-outlined.fill {
+  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.highlight-source {
+  background: var(--highlight);
+  border-left: 3px solid var(--secondary);
+  border-radius: 0 6px 6px 0;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--primary) 22%, transparent);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--outline-variant) transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--outline-variant);
+  border-radius: 999px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}

@@ -1,24 +1,29 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import type { View } from "./components/layout/AppSidebar";
+import { Shell } from "./components/layout/Shell";
+import { LibraryPage } from "./pages/LibraryPage";
+import { ChatPage } from "./pages/ChatPage";
+import { QuizPage } from "./pages/QuizPage";
+import { DashboardPage } from "./pages/DashboardPage";
 
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+const TITLES: Record<Exclude<View, "chat">, string> = {
+  library: "Library",
+  quiz: "Quiz",
+  dashboard: "Dashboard",
+};
 
-function App() {
-  const [status, setStatus] = useState<string>("checking...");
+export default function App() {
+  const [view, setView] = useState<View>("library");
 
-  useEffect(() => {
-    fetch(`${API_URL}/health`)
-      .then((res) => res.json())
-      .then((data) => setStatus(data.status))
-      .catch(() => setStatus("backend unreachable"));
-  }, []);
+  // Chat có layout riêng (rail 72px + panel nguồn), không dùng Shell.
+  if (view === "chat") return <ChatPage onNavigate={setView} />;
+
+  const content =
+    view === "library" ? <LibraryPage /> : view === "quiz" ? <QuizPage /> : <DashboardPage />;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-900 text-white">
-      <p className="text-xl">
-        Backend status: <span className="font-mono text-emerald-400">{status}</span>
-      </p>
-    </div>
+    <Shell active={view} title={TITLES[view]} onNavigate={setView}>
+      {content}
+    </Shell>
   );
 }
-
-export default App;

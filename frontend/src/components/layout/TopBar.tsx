@@ -1,0 +1,52 @@
+import { Icon } from "../Icon";
+
+interface Props {
+  title: string;
+}
+
+export function TopBar({ title }: Props) {
+  return (
+    <header className="flex h-16 shrink-0 items-center gap-6 border-b border-outline-variant bg-surface px-8">
+      <h2 className="font-serif text-2xl font-bold text-on-surface">{title}</h2>
+
+      <nav className="flex items-center gap-5 text-sm">
+        <button className="border-b-2 border-primary pb-0.5 font-semibold text-primary">
+          Documents
+        </button>
+        <button className="pb-0.5 text-on-surface-variant transition-colors hover:text-on-surface">
+          History
+        </button>
+      </nav>
+
+      <div className="relative ml-auto w-full max-w-sm">
+        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-outline">
+          <Icon name="search" size={20} />
+        </span>
+        <input
+          type="text"
+          placeholder="Tìm kiếm tài liệu..."
+          className="w-full rounded-full border border-outline-variant bg-surface-container-low py-2.5 pl-10 pr-4 text-sm text-on-surface outline-none transition placeholder:text-outline focus:border-primary"
+        />
+      </div>
+
+      <button
+        type="button"
+        className="flex shrink-0 items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover"
+      >
+        <Icon name="upload" size={18} />
+        Upload
+      </button>
+
+      <div className="flex items-center gap-4 border-l border-outline-variant pl-4">
+        <button className="text-on-surface-variant transition-colors hover:text-on-surface">
+          <Icon name="notifications" size={22} />
+        </button>
+        <img
+          src="https://picsum.photos/seed/campus-user/80/80"
+          alt="Avatar"
+          className="h-9 w-9 rounded-full object-cover"
+        />
+      </div>
+    </header>
+  );
+}
