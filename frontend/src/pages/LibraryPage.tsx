@@ -1,80 +1,155 @@
+import { useCallback, useEffect, useRef, useState } from "react";
+import { api } from "../api";
+import type { DocumentInfo } from "../types";
 import { Icon } from "../components/Icon";
 
-const DOCS = [
-  { title: "Introduction to Neural Networks", date: "12 thg 10, 2023", badge: "picture_as_pdf", seed: "neural-net-paper" },
-  { title: "Lecture_Notes_Week_3.pdf", date: "08 thg 10, 2023", badge: "code", seed: "lecture-code" },
-  { title: "Transformer_Architecture_De...", date: "05 thg 10, 2023", badge: "description", seed: "transformer-diagram" },
-];
+interface Props {
+  onOpenDoc: (id: string, name: string) => void;
+}
 
-export function LibraryPage() {
+function statusBadge(doc: DocumentInfo) {
+  if (doc.status === "processing")
+    return <span className="flex items-center gap-1 text-xs text-primary"><Icon name="progress_activity" size={13} className="animate-spin" />Đang xử lý</span>;
+  if (doc.status === "failed")
+    return (
+      <span className="flex items-center gap-1 text-xs text-error" title={doc.error ?? "Lỗi xử lý"}>
+        <Icon name="error" size={13} />
+        {doc.error ? "Không đọc được" : "Lỗi"}
+      </span>
+    );
+  return <span className="text-xs text-on-surface-variant">{doc.chunk_count} đoạn</span>;
+}
+
+export function LibraryPage({ onOpenDoc }: Props) {
+  const [documents, setDocuments] = useState<DocumentInfo[]>([]);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [dragging, setDragging] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const pollRef = useRef<number | null>(null);
+
+  const refresh = useCallback(async () => {
+    try {
+      setDocuments(await api.listDocuments());
+      setError(null);
+    } catch {
+      setError("Không kết nối được backend (localhost:8000).");
+    }
+  }, []);
+
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
+
+  useEffect(() => {
+    const processing = documents.some((d) => d.status === "processing");
+    if (processing && pollRef.current == null) pollRef.current = window.setInterval(refresh, 2500);
+    else if (!processing && pollRef.current != null) {
+      clearInterval(pollRef.current);
+      pollRef.current = null;
+    }
+    return () => {
+      if (pollRef.current != null) clearInterval(pollRef.current);
+      pollRef.current = null;
+    };
+  }, [documents, refresh]);
+
+  async function handleFile(file: File | undefined) {
+    if (!file) return;
+    if (!/\.(pdf|ipynb)$/i.test(file.name)) {
+      setError("Chỉ nhận file .pdf hoặc .ipynb");
+      return;
+    }
+    setError(null);
+    setUploading(true);
+    try {
+      await api.uploadDocument(file);
+      await refresh();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Upload thất bại");
+    } finally {
+      setUploading(false);
+      if (inputRef.current) inputRef.current.value = "";
+    }
+  }
+
   return (
     <div className="mx-auto flex max-w-5xl flex-col gap-8">
-      {/* Upload dropzone */}
-      <div className="flex flex-col items-center rounded-2xl border-2 border-dashed border-outline-variant bg-surface px-6 py-12 text-center">
+      {/* Dropzone */}
+      <div
+        onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+        onDragLeave={() => setDragging(false)}
+        onDrop={(e) => { e.preventDefault(); setDragging(false); handleFile(e.dataTransfer.files[0]); }}
+        className={`flex flex-col items-center rounded-2xl border-2 border-dashed px-6 py-12 text-center transition-colors ${
+          dragging ? "border-primary bg-primary-container/20" : "border-outline-variant bg-surface"
+        }`}
+      >
         <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary-container">
-          <Icon name="cloud_upload" size={36} className="text-primary" />
+          <Icon name={uploading ? "progress_activity" : "cloud_upload"} size={36} className={`text-primary ${uploading ? "animate-spin" : ""}`} />
         </div>
         <h3 className="font-serif mt-5 text-2xl font-bold text-on-surface">
-          Tải lên tài liệu nghiên cứu
+          {uploading ? "Đang tải lên…" : "Tải lên tài liệu nghiên cứu"}
         </h3>
         <p className="mt-2 text-base text-on-surface-variant">
           Kéo thả tài liệu vào đây hoặc{" "}
-          <button className="font-semibold text-primary underline underline-offset-2">
+          <button onClick={() => inputRef.current?.click()} className="font-semibold text-primary underline underline-offset-2">
             chọn file
           </button>
         </p>
-        <p className="mt-1 text-sm text-outline">Hỗ trợ PDF, .ipynb, .docx (Tối đa 50MB)</p>
-        <div className="mt-6 flex items-center gap-3">
-          <button className="flex items-center gap-2 rounded-lg border border-outline-variant bg-surface px-4 py-2.5 text-sm font-medium text-on-surface transition-colors hover:bg-surface-container">
-            <Icon name="link" size={18} className="text-on-surface-variant" />
-            Dán URL
-          </button>
-          <button className="flex items-center gap-2 rounded-lg border border-outline-variant bg-surface px-4 py-2.5 text-sm font-medium text-on-surface transition-colors hover:bg-surface-container">
-            <Icon name="add_to_drive" size={18} className="text-on-surface-variant" />
-            Google Drive
-          </button>
-        </div>
+        <p className="mt-1 text-sm text-outline">Hỗ trợ PDF, .ipynb (Tối đa 50MB)</p>
+        <input ref={inputRef} type="file" accept=".pdf,.ipynb" className="hidden" onChange={(e) => handleFile(e.target.files?.[0])} />
+        {error && <p className="mt-3 text-sm text-error">{error}</p>}
       </div>
 
       {/* Recent docs */}
       <section>
         <div className="mb-4 flex items-center justify-between">
-          <h3 className="font-serif text-2xl font-bold text-on-surface">Tài liệu gần đây</h3>
-          <button className="text-sm font-semibold text-primary hover:underline">Xem tất cả</button>
+          <h3 className="font-serif text-2xl font-bold text-on-surface">Tài liệu của tôi</h3>
+          {documents.length > 0 && <span className="text-sm text-on-surface-variant">{documents.length} tài liệu</span>}
         </div>
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {DOCS.map((doc) => (
-            <article
-              key={doc.title}
-              className="group overflow-hidden rounded-xl border border-outline-variant bg-surface transition-shadow hover:shadow-[0_6px_20px_rgba(24,35,56,0.08)]"
-            >
-              <div className="relative h-40 overflow-hidden bg-surface-container">
-                <img
-                  src={`https://picsum.photos/seed/${doc.seed}/480/320`}
-                  alt=""
-                  className="h-full w-full object-cover"
-                />
-                <span className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-lg bg-surface text-primary shadow-sm">
-                  <Icon name={doc.badge} size={18} />
-                </span>
-              </div>
-              <div className="p-4">
-                <h4 className="truncate font-semibold text-on-surface">{doc.title}</h4>
-                <div className="mt-2 flex items-center justify-between">
-                  <span className="text-xs text-on-surface-variant">{doc.date}</span>
-                  <div className="flex items-center gap-1 text-on-surface-variant">
-                    <button className="rounded p-1 transition-colors hover:text-warning">
-                      <Icon name="star" size={18} />
-                    </button>
-                    <button className="rounded p-1 transition-colors hover:text-on-surface">
-                      <Icon name="more_vert" size={18} />
-                    </button>
+
+        {documents.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-outline-variant py-12 text-center text-sm text-on-surface-variant">
+            Chưa có tài liệu. Tải lên để bắt đầu hỏi đáp.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {documents.map((doc) => {
+              const ready = doc.status === "ready";
+              return (
+                <article key={doc.id} className="overflow-hidden rounded-xl border border-outline-variant bg-surface transition-shadow hover:shadow-[0_6px_20px_rgba(24,35,56,0.08)]">
+                  <button
+                    disabled={!ready}
+                    onClick={() => onOpenDoc(doc.id, doc.filename)}
+                    className="flex h-28 w-full items-center justify-center bg-surface-container disabled:cursor-not-allowed"
+                  >
+                    <Icon name={doc.source_type === "notebook" ? "code" : "picture_as_pdf"} size={40} className="text-primary" />
+                  </button>
+                  <div className="p-4">
+                    <h4 className="truncate font-semibold text-on-surface">{doc.filename}</h4>
+                    <div className="mt-2 flex items-center justify-between">
+                      {statusBadge(doc)}
+                      <div className="flex items-center gap-1 text-on-surface-variant">
+                        {ready && (
+                          <button onClick={() => onOpenDoc(doc.id, doc.filename)} className="rounded p-1 transition-colors hover:text-primary" title="Mở chat">
+                            <Icon name="chat_bubble" size={17} />
+                          </button>
+                        )}
+                        <button
+                          onClick={async () => { await api.deleteDocument(doc.id); refresh(); }}
+                          className="rounded p-1 transition-colors hover:text-error"
+                          title="Xóa"
+                        >
+                          <Icon name="delete" size={17} />
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
+                </article>
+              );
+            })}
+          </div>
+        )}
       </section>
 
       {/* Promo banner */}
@@ -83,15 +158,11 @@ export function LibraryPage() {
           <Icon name="auto_awesome" size={24} fill />
         </span>
         <div className="flex-1">
-          <h4 className="font-semibold">Mới: Phân tích tài liệu bằng AI</h4>
+          <h4 className="font-semibold">Phân tích tài liệu bằng AI</h4>
           <p className="mt-0.5 text-sm text-on-navy/70">
-            Giờ đây bạn có thể đặt câu hỏi trực tiếp cho bộ tài liệu của mình. Tải tài liệu lên và bắt
-            đầu trò chuyện ngay!
+            Tải tài liệu lên, chờ xử lý xong, rồi mở chat để đặt câu hỏi kèm trích dẫn nguồn.
           </p>
         </div>
-        <button className="shrink-0 rounded-lg bg-navy-soft px-4 py-2.5 text-sm font-semibold text-on-navy transition-opacity hover:opacity-90">
-          Tìm hiểu thêm
-        </button>
       </div>
     </div>
   );

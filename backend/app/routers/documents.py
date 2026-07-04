@@ -21,6 +21,15 @@ def _run_ingestion(document_id: str, file_path: str) -> None:
     """Chạy nền: parse → chunk → embed → store. Cập nhật status khi xong/lỗi."""
     try:
         n = ingest_document(file_path, document_id)
+        if n == 0:
+            # PDF scan / không có lớp text → không tạo được đoạn nào. Chưa hỗ trợ OCR.
+            document_store.update(
+                document_id,
+                status="failed",
+                chunk_count=0,
+                error="Không trích xuất được văn bản (có thể là PDF scan — chưa hỗ trợ OCR).",
+            )
+            return
         invalidate_bm25_cache(document_id)
         document_store.update(document_id, status="ready", chunk_count=n)
     except Exception as e:  # noqa: BLE001 — ghi lỗi vào record để client thấy

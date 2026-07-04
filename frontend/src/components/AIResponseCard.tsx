@@ -1,4 +1,4 @@
-import type { Citation } from "../types/chat";
+import type { Citation } from "../types";
 import { CitationChip } from "./CitationChip";
 import { Icon } from "./Icon";
 
@@ -9,33 +9,33 @@ interface Props {
 }
 
 /**
- * Cách chèn chip vào giữa text (phần khó nhất):
- * Mình KHÔNG dùng markdown parser mà tách content thành các "segment" bằng regex
- * /(\[\d+\])/. Lý do:
- *  - Phần tử động duy nhất trong câu trả lời là marker trích dẫn [n]; markdown
- *    parser là quá mức cần thiết và còn phải viết custom renderer để nhét được
- *    React component (chip bấm được) vào giữa 1 paragraph.
- *  - Tách segment giữ được chip là React component thật (onClick), thay vì phải
- *    dùng dangerouslySetInnerHTML.
- *  - Nếu sau này cần markdown thật (heading, list, bold), sẽ đổi sang react-markdown
- *    và khai báo renderer riêng cho [n]. Hiện tại giữ đơn giản, đúng nhu cầu.
- * whitespace-pre-wrap giữ nguyên xuống dòng trong content mock.
+ * Chèn chip vào giữa text: tách content theo regex bắt cả marker đơn "[1]" lẫn
+ * gộp "[1, 2, 3]" (LLM đôi khi gộp). Mỗi số → 1 chip bấm được khớp citation.ref.
+ * Không dùng markdown parser vì chỉ có 1 loại phần tử động là marker trích dẫn.
  */
 function renderContent(content: string, citations: Citation[], onClick: (c: Citation) => void) {
-  return content.split(/(\[\d+\])/g).map((segment, i) => {
-    const match = segment.match(/^\[(\d+)\]$/);
+  return content.split(/(\[[\d,\s]+\])/g).map((segment, i) => {
+    const match = segment.match(/^\[([\d,\s]+)\]$/);
     if (!match) return <span key={i}>{segment}</span>;
-    const index = Number(match[1]);
-    const citation = citations.find((c) => c.index === index);
-    if (!citation) return <span key={i}>{segment}</span>;
-    return <CitationChip key={i} index={index} onClick={() => onClick(citation)} />;
+    const refs = match[1].split(",").map((s) => Number(s.trim())).filter((n) => Number.isFinite(n));
+    const chips = refs
+      .map((ref) => ({ ref, citation: citations.find((c) => c.ref === ref) }))
+      .filter((x) => x.citation);
+    if (chips.length === 0) return <span key={i}>{segment}</span>;
+    return (
+      <span key={i} className="inline-flex gap-0.5">
+        {chips.map(({ ref, citation }) => (
+          <CitationChip key={ref} index={ref} onClick={() => onClick(citation!)} />
+        ))}
+      </span>
+    );
   });
 }
 
 export function AIResponseCard({ content, citations, onCitationClick }: Props) {
   return (
-    <div className="rounded-xl border border-outline-variant bg-surface p-lg shadow-[0_1px_3px_rgba(30,42,74,0.08)]">
-      <div className="mb-md flex items-center gap-sm">
+    <div className="rounded-xl border border-outline-variant bg-surface p-6 shadow-[0_1px_3px_rgba(24,35,56,0.08)]">
+      <div className="mb-4 flex items-center gap-2">
         <Icon name="auto_awesome" size={22} fill className="text-secondary" />
         <span className="text-label-md font-semibold uppercase tracking-wider text-secondary">
           AI Assistant
@@ -46,36 +46,22 @@ export function AIResponseCard({ content, citations, onCitationClick }: Props) {
         {renderContent(content, citations, onCitationClick)}
       </p>
 
-      <div className="mt-lg flex items-center justify-between border-t border-outline-variant pt-md">
-        <div className="flex items-center gap-md">
-          <button
-            type="button"
-            className="flex items-center gap-xs text-on-surface-variant transition-colors hover:text-secondary"
-          >
+      <div className="mt-6 flex items-center justify-between border-t border-outline-variant pt-4">
+        <div className="flex items-center gap-4">
+          <button className="flex items-center gap-1.5 text-on-surface-variant transition-colors hover:text-secondary">
             <Icon name="content_copy" size={18} />
             <span className="text-label-md">Sao chép</span>
           </button>
-          <button
-            type="button"
-            className="flex items-center gap-xs text-on-surface-variant transition-colors hover:text-secondary"
-          >
+          <button className="flex items-center gap-1.5 text-on-surface-variant transition-colors hover:text-secondary">
             <Icon name="refresh" size={18} />
             <span className="text-label-md">Thử lại</span>
           </button>
         </div>
-        <div className="flex items-center gap-sm">
-          <button
-            type="button"
-            aria-label="Hữu ích"
-            className="text-on-surface-variant transition-colors hover:text-secondary"
-          >
+        <div className="flex items-center gap-2">
+          <button aria-label="Hữu ích" className="text-on-surface-variant transition-colors hover:text-secondary">
             <Icon name="thumb_up" size={20} />
           </button>
-          <button
-            type="button"
-            aria-label="Chưa tốt"
-            className="text-on-surface-variant transition-colors hover:text-error"
-          >
+          <button aria-label="Chưa tốt" className="text-on-surface-variant transition-colors hover:text-error">
             <Icon name="thumb_down" size={20} />
           </button>
         </div>

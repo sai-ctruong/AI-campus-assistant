@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "motion/react";
-import type { Citation } from "../types/chat";
+import type { Citation } from "../types";
 import { Icon } from "./Icon";
 
 interface Props {
@@ -26,11 +26,11 @@ export function SourcePanel({ citation, onClose }: Props) {
           transition={{ type: "spring", stiffness: 260, damping: 30 }}
           className="flex h-full shrink-0 flex-col overflow-hidden border-l border-outline-variant bg-surface"
         >
-          <div className="flex h-16 w-[420px] items-center justify-between border-b border-outline-variant px-lg">
-            <div className="flex items-center gap-sm">
+          <div className="flex h-16 w-[420px] items-center justify-between border-b border-outline-variant px-6">
+            <div className="flex items-center gap-2">
               <Icon name="description" size={20} className="text-secondary" />
               <h2 className="text-label-md font-medium uppercase tracking-wide text-on-surface-variant">
-                Nguồn trích dẫn [{citation.index}]
+                Nguồn trích dẫn [{citation.ref}]
               </h2>
             </div>
             <button
@@ -43,37 +43,28 @@ export function SourcePanel({ citation, onClose }: Props) {
             </button>
           </div>
 
-          <div className="w-[420px] flex-1 overflow-y-auto bg-surface-container-low p-lg">
-            <div className="flex min-h-[500px] flex-col gap-lg rounded border border-outline-variant bg-surface p-xl shadow-[0_8px_24px_rgba(30,42,74,0.12)]">
-              <span className="text-[10px] font-medium uppercase tracking-wide text-outline">
-                {citation.sourceFile} · trang {citation.page}
+          <div className="w-[420px] flex-1 overflow-y-auto bg-surface-container-low p-6">
+            <div className="rounded-lg border border-outline-variant bg-surface p-6 shadow-[0_4px_16px_rgba(24,35,56,0.08)]">
+              <span className="text-[10px] font-semibold uppercase tracking-wide text-outline">
+                {citation.source_file} · {citation.location}
               </span>
-              <div className="space-y-md text-on-surface/90">
-                <h3 className="font-display text-[20px] font-semibold">
-                  3.4 Gradient-Based Optimization
-                </h3>
-                <p className="text-[13px] leading-relaxed">
-                  Most deep learning algorithms involve optimization of some sort. Optimization
-                  refers to the task of either minimizing or maximizing some function f(x) by
-                  altering x. {citation.snippet}
-                </p>
-                <div className="highlight-source my-md px-md py-base text-[14px] italic">
-                  "{citation.highlightedQuote}"
-                </div>
-                <p className="text-[13px] leading-relaxed text-on-surface-variant">
-                  The gradient of a function gives the direction of steepest ascent; following its
-                  negative gives steepest descent, the basis of gradient descent.
-                </p>
+              <div className="highlight-source mt-4 px-4 py-3 text-[14px] italic leading-relaxed text-on-surface">
+                "{citation.snippet}
+                {citation.snippet.length >= 200 ? "…" : ""}"
               </div>
+              <p className="mt-4 text-[12px] leading-relaxed text-on-surface-variant">
+                Đoạn trích được trích xuất trực tiếp từ tài liệu bạn tải lên, dùng làm căn cứ cho câu
+                trả lời phía trên.
+              </p>
             </div>
           </div>
 
-          <footer className="flex w-[420px] items-center justify-around border-t border-outline-variant bg-surface p-sm">
+          <footer className="flex w-[420px] items-center justify-around border-t border-outline-variant bg-surface p-2">
             {TOOLS.map((t) => (
               <button
                 key={t.icon}
                 type="button"
-                className="flex flex-col items-center gap-xs px-sm py-xs text-on-surface-variant transition-colors hover:text-primary"
+                className="flex flex-col items-center gap-1 px-2 py-1 text-on-surface-variant transition-colors hover:text-primary"
               >
                 <Icon name={t.icon} size={20} />
                 <span className="text-[10px]">{t.label}</span>

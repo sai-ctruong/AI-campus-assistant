@@ -1,19 +1,37 @@
 import { Icon } from "../Icon";
+import type { View } from "./AppSidebar";
 
 interface Props {
   title: string;
+  active: View;
+  onNavigate: (v: View) => void;
+  onUpload?: () => void;
 }
 
-export function TopBar({ title }: Props) {
+export function TopBar({ title, active, onNavigate, onUpload }: Props) {
   return (
     <header className="flex h-16 shrink-0 items-center gap-6 border-b border-outline-variant bg-surface px-8">
       <h2 className="font-serif text-2xl font-bold text-on-surface">{title}</h2>
 
       <nav className="flex items-center gap-5 text-sm">
-        <button className="border-b-2 border-primary pb-0.5 font-semibold text-primary">
+        <button
+          onClick={() => onNavigate("library")}
+          className={
+            active === "library"
+              ? "border-b-2 border-primary pb-0.5 font-semibold text-primary"
+              : "pb-0.5 text-on-surface-variant transition-colors hover:text-on-surface"
+          }
+        >
           Documents
         </button>
-        <button className="pb-0.5 text-on-surface-variant transition-colors hover:text-on-surface">
+        <button
+          onClick={() => onNavigate("notebook")}
+          className={
+            active === "notebook"
+              ? "border-b-2 border-primary pb-0.5 font-semibold text-primary"
+              : "pb-0.5 text-on-surface-variant transition-colors hover:text-on-surface"
+          }
+        >
           History
         </button>
       </nav>
@@ -31,6 +49,7 @@ export function TopBar({ title }: Props) {
 
       <button
         type="button"
+        onClick={onUpload}
         className="flex shrink-0 items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover"
       >
         <Icon name="upload" size={18} />

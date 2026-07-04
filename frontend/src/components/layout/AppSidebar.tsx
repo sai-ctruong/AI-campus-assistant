@@ -1,6 +1,6 @@
 import { Icon } from "../Icon";
 
-export type View = "library" | "chat" | "quiz" | "dashboard";
+export type View = "library" | "chat" | "quiz" | "dashboard" | "notebook";
 
 interface Props {
   active: View;
