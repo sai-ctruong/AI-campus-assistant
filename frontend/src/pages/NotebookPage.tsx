@@ -98,9 +98,9 @@ export function NotebookPage() {
   const explMap = new Map(result.explanations.map((e) => [e.cell_index, e]));
 
   return (
-    <div className="flex h-full">
+    <div className="flex h-full flex-col md:flex-row">
       {/* Code viewer */}
-      <div className="flex w-[55%] flex-col bg-navy">
+      <div className="flex h-1/2 w-full flex-col bg-navy md:h-full md:w-[55%]">
         <div className="flex items-center justify-between border-b border-white/10 px-5 py-3">
           <div className="flex items-center gap-2 text-on-navy">
             <Icon name="terminal" size={18} />
@@ -142,7 +142,7 @@ export function NotebookPage() {
       </div>
 
       {/* Annotation */}
-      <div className="flex-1 overflow-y-auto bg-surface p-8">
+      <div className="flex-1 overflow-y-auto bg-surface p-5 md:p-8">
         <span className="inline-block rounded-full bg-primary-container px-3 py-1 text-xs font-semibold uppercase tracking-wide text-on-primary-container">
           Chú giải AI
         </span>

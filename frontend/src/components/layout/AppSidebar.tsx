@@ -7,6 +7,7 @@ export type View = "library" | "chat" | "quiz" | "dashboard" | "notebook";
 
 interface Props {
   active: View;
+  open: boolean;
   onNavigate: (v: View) => void;
   onOpenDoc: (id: string, name: string) => void;
 }
@@ -19,7 +20,7 @@ const NAV: { key: View; icon: string; label: string }[] = [
   { key: "dashboard", icon: "dashboard", label: "Dashboard" },
 ];
 
-export function AppSidebar({ active, onNavigate, onOpenDoc }: Props) {
+export function AppSidebar({ active, open, onNavigate, onOpenDoc }: Props) {
   const [docs, setDocs] = useState<DocumentInfo[]>([]);
 
   useEffect(() => {
@@ -29,7 +30,11 @@ export function AppSidebar({ active, onNavigate, onOpenDoc }: Props) {
   const recent = docs.filter((d) => d.status === "ready").slice(0, 5);
 
   return (
-    <aside className="flex h-full w-64 shrink-0 flex-col border-r border-outline-variant bg-surface px-4 py-5">
+    <aside
+      className={`fixed inset-y-0 left-0 z-40 flex w-64 shrink-0 flex-col border-r border-outline-variant bg-surface px-4 py-5 transition-transform duration-200 md:static md:translate-x-0 ${
+        open ? "translate-x-0" : "-translate-x-full"
+      }`}
+    >
       {/* Brand */}
       <div className="flex items-center gap-3 px-1">
         <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-navy text-on-navy">

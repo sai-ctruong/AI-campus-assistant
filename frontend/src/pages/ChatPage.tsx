@@ -100,11 +100,11 @@ export function ChatPage({ documentId, documentName, onNavigate }: Props) {
       <NavRail active="chat" onNavigate={onNavigate} />
 
       <section className="relative flex h-full flex-1 flex-col bg-background">
-        <header className="flex h-16 items-center justify-between border-b border-outline-variant bg-surface px-8">
-          <div className="flex items-center gap-4">
-            <h1 className="text-2xl font-bold text-on-surface">Chat Nghiên cứu</h1>
+        <header className="flex h-16 items-center justify-between gap-2 border-b border-outline-variant bg-surface px-4 md:px-8">
+          <div className="flex min-w-0 items-center gap-3">
+            <h1 className="shrink-0 text-lg font-bold text-on-surface md:text-2xl">Chat</h1>
             {documentName && (
-              <span className="max-w-xs truncate rounded-md bg-surface-container px-3 py-1 text-xs text-on-surface-variant">
+              <span className="hidden max-w-[40vw] truncate rounded-md bg-surface-container px-3 py-1 text-xs text-on-surface-variant sm:inline">
                 {documentName}
               </span>
             )}
@@ -146,7 +146,7 @@ export function ChatPage({ documentId, documentName, onNavigate }: Props) {
           <EmptyDoc onGoLibrary={() => onNavigate("library")} />
         ) : (
           <>
-            <div ref={scrollRef} className="flex-1 overflow-y-auto px-8 py-8">
+            <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-6 md:px-8 md:py-8">
               <div className="mx-auto flex w-full max-w-[800px] flex-col gap-8">
                 {messages.length === 0 && (
                   <p className="mt-10 text-center text-sm text-on-surface-variant">
@@ -182,7 +182,7 @@ export function ChatPage({ documentId, documentName, onNavigate }: Props) {
               </div>
             </div>
 
-            <div className="bg-gradient-to-t from-background to-transparent p-8">
+            <div className="bg-gradient-to-t from-background to-transparent p-4 md:p-8">
               <div className="mx-auto max-w-[800px]">
                 {speech.listening && (
                   <p className="mb-2 flex items-center gap-2 text-sm text-primary">

@@ -3,15 +3,25 @@ import { Icon } from "../Icon";
 interface Props {
   title: string;
   onUpload?: () => void;
+  onMenuClick?: () => void;
 }
 
-export function TopBar({ title, onUpload }: Props) {
+export function TopBar({ title, onUpload, onMenuClick }: Props) {
   return (
-    <header className="flex h-16 shrink-0 items-center gap-6 border-b border-outline-variant bg-surface px-8">
-      <h2 className="font-serif text-2xl font-bold text-on-surface">{title}</h2>
+    <header className="flex h-16 shrink-0 items-center gap-3 border-b border-outline-variant bg-surface px-4 md:gap-6 md:px-8">
+      <button
+        type="button"
+        onClick={onMenuClick}
+        aria-label="Menu"
+        className="rounded-lg p-1 text-on-surface-variant transition-colors hover:bg-surface-container md:hidden"
+      >
+        <Icon name="menu" size={24} />
+      </button>
 
-      <div className="ml-auto flex items-center gap-3">
-        <div className="relative w-56 lg:w-72">
+      <h2 className="font-serif truncate text-xl font-bold text-on-surface md:text-2xl">{title}</h2>
+
+      <div className="ml-auto flex items-center gap-2 md:gap-3">
+        <div className="relative hidden w-56 lg:block lg:w-72">
           <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-outline">
             <Icon name="search" size={20} />
           </span>
@@ -25,10 +35,10 @@ export function TopBar({ title, onUpload }: Props) {
         <button
           type="button"
           onClick={onUpload}
-          className="flex shrink-0 items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover"
+          className="flex shrink-0 items-center gap-2 rounded-lg bg-primary px-3 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover md:px-4"
         >
           <Icon name="upload" size={18} />
-          Upload
+          <span className="hidden sm:inline">Upload</span>
         </button>
 
         <button className="shrink-0 text-on-surface-variant transition-colors hover:text-on-surface">
