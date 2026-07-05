@@ -15,11 +15,15 @@
 
 **Biến slide, giáo trình PDF, Word và notebook thành một trợ lý học tập biết trả lời — luôn kèm trích dẫn tới từng trang.**
 
+<br/>
+
+[![Live Demo](https://img.shields.io/badge/%F0%9F%9A%80%20Live%20Demo-Dùng%20thử%20ngay-0f7a5f?style=for-the-badge&logo=vercel&logoColor=white)](https://ai-rag-assistant-pi.vercel.app)
+
 </div>
 
 <div align="center">
 
-[Tính năng](#-tính-năng) • [Demo](#-demo) • [Kiến trúc](#️-kiến-trúc) • [Tech stack](#️-tech-stack) • [Cấu trúc](#-cấu-trúc-project) • [Cài đặt](#-cài-đặt) • [API](#-api) • [Điểm nổi bật](#-điểm-nổi-bật-kỹ-thuật)
+[🚀 Live Demo](https://ai-rag-assistant-pi.vercel.app) • [Tính năng](#-tính-năng) • [Demo](#-demo) • [Kiến trúc](#️-kiến-trúc) • [Tech stack](#️-tech-stack) • [Cấu trúc](#-cấu-trúc-project) • [Cài đặt](#-cài-đặt) • [API](#-api) • [Điểm nổi bật](#-điểm-nổi-bật-kỹ-thuật)
 
 </div>
 
@@ -50,7 +54,7 @@
 
 ## 🎬 Demo
 
-> Thêm ảnh chụp vào `docs/screenshots/` (xem hướng dẫn trong thư mục) để phần này hiển thị.
+> 🚀 **Dùng thử trực tiếp:** [**ai-rag-assistant-pi.vercel.app**](https://ai-rag-assistant-pi.vercel.app)
 
 <div align="center">
 
