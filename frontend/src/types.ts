@@ -37,6 +37,66 @@ export interface UploadResponse {
   status: string;
 }
 
+// ---------- Quiz (Phase 8) ----------
+
+export interface QuizQuestion {
+  question: string;
+  options: string[];
+  correct_index: number;
+  explanation: string;
+  source_hint: string;
+}
+
+export interface Flashcard {
+  front: string;
+  back: string;
+}
+
+export interface QuizResponse {
+  document_id: string;
+  questions: QuizQuestion[];
+  flashcards: Flashcard[];
+}
+
+// ---------- Progress (Phase 10) ----------
+
+export interface DocumentProgress {
+  document_id: string;
+  filename: string;
+  attempts: number;
+  correct: number;
+  accuracy: number;
+}
+
+export interface ProgressResponse {
+  total_attempts: number;
+  total_correct: number;
+  overall_accuracy: number;
+  documents: DocumentProgress[];
+}
+
+// ---------- Notebook explainer (Phase 9) ----------
+
+export interface NotebookCell {
+  cell_index: number;
+  cell_type: string;
+  source: string;
+}
+
+export interface CellExplanation {
+  cell_index: number;
+  title: string;
+  explanation: string;
+}
+
+export interface ExplainResponse {
+  document_id: string;
+  filename: string;
+  summary: string;
+  cells: NotebookCell[];
+  explanations: CellExplanation[];
+}
+
 /** Tin nhắn hiển thị trong khung chat (client-side). */
 export interface ChatMessage {
   role: "user" | "assistant";

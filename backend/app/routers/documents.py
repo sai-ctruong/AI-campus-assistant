@@ -5,7 +5,7 @@ import uuid
 from fastapi import APIRouter, UploadFile, File, BackgroundTasks, HTTPException
 from app.config import settings
 from app.schemas import DocumentInfo, UploadResponse
-from app.db import document_store, chat_store
+from app.db import document_store, chat_store, quiz_store
 from app.db.chroma_client import delete_document
 from app.ingestion.pipeline import ingest_document
 from app.rag.retriever import invalidate_bm25_cache
@@ -69,6 +69,7 @@ def delete_document_endpoint(document_id: str):
     delete_document(document_id)              # xóa vector trong ChromaDB
     invalidate_bm25_cache(document_id)
     chat_store.delete_for_document(document_id)
+    quiz_store.delete_for_document(document_id)
     shutil.rmtree(_doc_dir(document_id), ignore_errors=True)
     document_store.delete(document_id)
     return {"status": "deleted", "document_id": document_id}

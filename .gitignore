@@ -17,5 +17,6 @@ data/uploads/*
 data/chroma/*
 data/documents.json
 data/chat_history.json
+data/quiz_attempts.json
 !data/uploads/.gitkeep
 !data/chroma/.gitkeep

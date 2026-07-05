@@ -1,4 +1,12 @@
-import type { ChatResponse, ChatTurn, DocumentInfo, UploadResponse } from "./types";
+import type {
+  ChatResponse,
+  ChatTurn,
+  DocumentInfo,
+  ExplainResponse,
+  ProgressResponse,
+  QuizResponse,
+  UploadResponse,
+} from "./types";
 
 const BASE = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 
@@ -39,4 +47,23 @@ export const api = {
 
   getHistory: (id: string) =>
     fetch(`${BASE}/chat/${id}/history`).then((r) => unwrap<ChatTurn[]>(r)),
+
+  generateQuiz: (id: string, nQuestions = 5) =>
+    fetch(`${BASE}/quiz/${id}/generate`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ n_questions: nQuestions, n_flashcards: 5 }),
+    }).then((r) => unwrap<QuizResponse>(r)),
+
+  recordAttempt: (documentId: string, question: string, isCorrect: boolean) =>
+    fetch(`${BASE}/quiz/attempts`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ document_id: documentId, question, is_correct: isCorrect }),
+    }).then((r) => unwrap<{ status: string }>(r)),
+
+  getProgress: () => fetch(`${BASE}/progress`).then((r) => unwrap<ProgressResponse>(r)),
+
+  explainNotebook: (id: string) =>
+    fetch(`${BASE}/explain/${id}`, { method: "POST" }).then((r) => unwrap<ExplainResponse>(r)),
 };
