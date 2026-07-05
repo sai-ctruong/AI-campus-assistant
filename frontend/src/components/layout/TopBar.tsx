@@ -36,35 +36,30 @@ export function TopBar({ title, active, onNavigate, onUpload }: Props) {
         </button>
       </nav>
 
-      <div className="relative ml-auto w-full max-w-sm">
-        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-outline">
-          <Icon name="search" size={20} />
-        </span>
-        <input
-          type="text"
-          placeholder="Tìm kiếm tài liệu..."
-          className="w-full rounded-full border border-outline-variant bg-surface-container-low py-2.5 pl-10 pr-4 text-sm text-on-surface outline-none transition placeholder:text-outline focus:border-primary"
-        />
-      </div>
+      <div className="ml-auto flex items-center gap-3">
+        <div className="relative w-56 lg:w-72">
+          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-outline">
+            <Icon name="search" size={20} />
+          </span>
+          <input
+            type="text"
+            placeholder="Tìm kiếm tài liệu..."
+            className="w-full rounded-full border border-outline-variant bg-surface-container-low py-2.5 pl-10 pr-4 text-sm text-on-surface outline-none transition placeholder:text-outline focus:border-primary"
+          />
+        </div>
 
-      <button
-        type="button"
-        onClick={onUpload}
-        className="flex shrink-0 items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover"
-      >
-        <Icon name="upload" size={18} />
-        Upload
-      </button>
+        <button
+          type="button"
+          onClick={onUpload}
+          className="flex shrink-0 items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover"
+        >
+          <Icon name="upload" size={18} />
+          Upload
+        </button>
 
-      <div className="flex items-center gap-4 border-l border-outline-variant pl-4">
-        <button className="text-on-surface-variant transition-colors hover:text-on-surface">
+        <button className="shrink-0 text-on-surface-variant transition-colors hover:text-on-surface">
           <Icon name="notifications" size={22} />
         </button>
-        <img
-          src="https://picsum.photos/seed/campus-user/80/80"
-          alt="Avatar"
-          className="h-9 w-9 rounded-full object-cover"
-        />
       </div>
     </header>
   );

@@ -44,11 +44,6 @@ export function NavRail({ active, onNavigate }: Props) {
       <button className="flex h-12 w-12 items-center justify-center rounded-xl text-on-surface-variant transition-colors hover:bg-surface-container/60">
         <Icon name="settings" size={22} />
       </button>
-      <img
-        src="https://picsum.photos/seed/campus-user/72/72"
-        alt="Avatar"
-        className="mt-2 h-9 w-9 rounded-full object-cover"
-      />
     </nav>
   );
 }
