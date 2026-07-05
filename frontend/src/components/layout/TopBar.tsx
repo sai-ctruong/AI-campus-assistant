@@ -1,40 +1,14 @@
 import { Icon } from "../Icon";
-import type { View } from "./AppSidebar";
 
 interface Props {
   title: string;
-  active: View;
-  onNavigate: (v: View) => void;
   onUpload?: () => void;
 }
 
-export function TopBar({ title, active, onNavigate, onUpload }: Props) {
+export function TopBar({ title, onUpload }: Props) {
   return (
     <header className="flex h-16 shrink-0 items-center gap-6 border-b border-outline-variant bg-surface px-8">
       <h2 className="font-serif text-2xl font-bold text-on-surface">{title}</h2>
-
-      <nav className="flex items-center gap-5 text-sm">
-        <button
-          onClick={() => onNavigate("library")}
-          className={
-            active === "library"
-              ? "border-b-2 border-primary pb-0.5 font-semibold text-primary"
-              : "pb-0.5 text-on-surface-variant transition-colors hover:text-on-surface"
-          }
-        >
-          Documents
-        </button>
-        <button
-          onClick={() => onNavigate("notebook")}
-          className={
-            active === "notebook"
-              ? "border-b-2 border-primary pb-0.5 font-semibold text-primary"
-              : "pb-0.5 text-on-surface-variant transition-colors hover:text-on-surface"
-          }
-        >
-          History
-        </button>
-      </nav>
 
       <div className="ml-auto flex items-center gap-3">
         <div className="relative w-56 lg:w-72">

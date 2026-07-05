@@ -15,6 +15,7 @@ const NAV: { key: View; icon: string; label: string }[] = [
   { key: "library", icon: "collections_bookmark", label: "Library" },
   { key: "chat", icon: "chat_bubble", label: "Chat" },
   { key: "quiz", icon: "quiz", label: "Quiz" },
+  { key: "notebook", icon: "terminal", label: "Notebook" },
   { key: "dashboard", icon: "dashboard", label: "Dashboard" },
 ];
 

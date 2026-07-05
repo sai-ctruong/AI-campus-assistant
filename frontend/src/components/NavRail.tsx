@@ -10,6 +10,7 @@ const ITEMS: { key: View; icon: string }[] = [
   { key: "library", icon: "collections_bookmark" },
   { key: "chat", icon: "chat_bubble" },
   { key: "quiz", icon: "quiz" },
+  { key: "notebook", icon: "terminal" },
   { key: "dashboard", icon: "dashboard" },
 ];
 

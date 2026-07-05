@@ -11,7 +11,7 @@ const TITLES: Record<Exclude<View, "chat">, string> = {
   library: "Library",
   quiz: "Quiz",
   dashboard: "Dashboard",
-  notebook: "History",
+  notebook: "Notebook",
 };
 
 export default function App() {

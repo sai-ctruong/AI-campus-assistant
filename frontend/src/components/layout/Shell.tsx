@@ -18,7 +18,7 @@ export function Shell({ active, title, onNavigate, onOpenDoc, children, padded =
     <div className="flex h-full">
       <AppSidebar active={active} onNavigate={onNavigate} onOpenDoc={onOpenDoc} />
       <div className="flex h-full flex-1 flex-col overflow-hidden">
-        <TopBar title={title} active={active} onNavigate={onNavigate} onUpload={onUpload} />
+        <TopBar title={title} onUpload={onUpload} />
         <main className={`flex-1 overflow-y-auto bg-background ${padded ? "px-8 py-7" : ""}`}>
           {children}
         </main>
