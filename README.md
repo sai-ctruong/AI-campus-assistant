@@ -1,8 +1,6 @@
 <div align="center">
 
-<img src="docs/banner.png" width="100%" alt="AI Campus Assistant" />
-
-<br/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0f7a5f,100:182338&height=220&section=header&text=AI%20Campus%20Assistant&fontSize=50&fontColor=ffffff&animation=fadeIn&fontAlignY=38&desc=RAG%20study%20assistant%20cho%20sinh%20vien&descAlignY=60&descSize=18" width="100%" alt="AI Campus Assistant" />
 
 <img src="https://readme-typing-svg.demolab.com?font=Plus+Jakarta+Sans&size=22&pause=1200&color=0F7A5F&center=true&vCenter=true&width=720&lines=Chat+voi+tai+lieu%2C+kem+trich+dan+nguon;Sinh+quiz+%26+flashcard+tu+dong;Giai+thich+code+notebook;Voice+mode+tieng+Viet" alt="typing" />
 
