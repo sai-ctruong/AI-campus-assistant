@@ -7,7 +7,7 @@
 <br/>
 
 [![License](https://img.shields.io/badge/License-MIT-0f7a5f?style=flat-square)](LICENSE)
-[![Roadmap](https://img.shields.io/badge/Roadmap-12%2F12%20done-0f7a5f?style=flat-square)](#-roadmap)
+[![RAG](https://img.shields.io/badge/RAG-hybrid%20%2B%20rerank-0f7a5f?style=flat-square)](#-điểm-nổi-bật-kỹ-thuật)
 [![Gemini](https://img.shields.io/badge/Powered%20by-Google%20Gemini-4285F4?style=flat-square&logo=google&logoColor=white)](https://ai.google.dev)
 [![PRs](https://img.shields.io/badge/PRs-welcome-182338?style=flat-square)](https://github.com/sai-ctruong/AI-campus-assistant/pulls)
 
@@ -19,7 +19,7 @@
 
 <div align="center">
 
-[Tính năng](#-tính-năng) • [Demo](#-demo) • [Kiến trúc](#️-kiến-trúc) • [Tech stack](#️-tech-stack) • [Cấu trúc](#-cấu-trúc-project) • [Cài đặt](#-cài-đặt) • [API](#-api) • [Roadmap](#-roadmap)
+[Tính năng](#-tính-năng) • [Demo](#-demo) • [Kiến trúc](#️-kiến-trúc) • [Tech stack](#️-tech-stack) • [Cấu trúc](#-cấu-trúc-project) • [Cài đặt](#-cài-đặt) • [API](#-api) • [Điểm nổi bật](#-điểm-nổi-bật-kỹ-thuật)
 
 </div>
 
@@ -149,15 +149,14 @@ AI-campus-assistant/
 │   │       └── explain.py            # giải thích notebook
 │   ├── Dockerfile
 │   └── requirements.txt
-├── frontend/
-│   └── src/
-│       ├── pages/                   # Library · Chat · Quiz · Dashboard · Notebook
-│       ├── components/              # AIResponseCard · CitationChip · SourcePanel · NavRail · Icon
-│       │   └── layout/              # AppSidebar · TopBar · Shell
-│       ├── hooks/useSpeech.ts       # voice (Web Speech API)
-│       ├── api.ts · types.ts        # client + kiểu dữ liệu
-│       └── index.css                # design tokens (Tailwind v4)
-└── DEPLOYMENT.md                    # hướng dẫn deploy Render + Vercel
+└── frontend/
+    └── src/
+        ├── pages/                   # Library · Chat · Quiz · Dashboard · Notebook
+        ├── components/              # AIResponseCard · CitationChip · SourcePanel · NavRail · Icon
+        │   └── layout/              # AppSidebar · TopBar · Shell
+        ├── hooks/useSpeech.ts       # voice (Web Speech API)
+        ├── api.ts · types.ts        # client + kiểu dữ liệu
+        └── index.css                # design tokens (Tailwind v4)
 ```
 
 ---
@@ -214,22 +213,20 @@ npm run dev
 
 ---
 
-## 🗺️ Roadmap
+## 💡 Điểm nổi bật kỹ thuật
 
-`████████████████████` **12 / 12 giai đoạn** ✅
+- **Hybrid retrieval** — kết hợp vector search (ngữ nghĩa) + BM25 (từ khóa), gộp bằng *Reciprocal Rank Fusion* thay vì chỉ dùng vector → bắt được cả câu hỏi dùng thuật ngữ chính xác lẫn diễn đạt tự nhiên.
+- **Cross-encoder reranking** — chấm lại top-20 ứng viên, giữ top-5 liên quan nhất trước khi đưa vào LLM.
+- **Chống hallucination** — structured JSON output + cờ `found_answer`; trích dẫn được **map từ chỉ số đoạn LLM thực sự dùng**, không tin số trang do LLM tự ghi.
+- **Conversation memory** — nhớ vài lượt gần nhất để hiểu câu hỏi follow-up ("còn phần kia thì sao?").
+- **Ingest bất đồng bộ** — upload không block server (FastAPI `BackgroundTasks`), tự cập nhật trạng thái `processing → ready/failed`.
+- **Đa định dạng** — parser riêng cho PDF / Word / notebook, mỗi chunk mang metadata riêng phục vụ trích dẫn tới đúng trang / phần / cell.
 
-- [x] **P0–1** Kiến trúc & scaffolding full-stack
-- [x] **P2** Ingestion (PDF · Word · notebook)
-- [x] **P3** Embedding + ChromaDB
-- [x] **P4** Hybrid retrieval + rerank
-- [x] **P5** LLM + citation + chống hallucination
-- [x] **P6** Backend API
-- [x] **P7** Frontend (5 màn hình)
-- [x] **P8** Quiz & flashcard
-- [x] **P9** Notebook explainer
-- [x] **P10** Progress tracking
-- [x] **P11** Voice mode tiếng Việt
-- [x] **P12** Deployment-ready → [DEPLOYMENT.md](DEPLOYMENT.md)
+---
+
+## 👤 Tác giả
+
+**Phạm Công Trường** — [GitHub @sai-ctruong](https://github.com/sai-ctruong)
 
 ---
 
