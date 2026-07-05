@@ -6,6 +6,7 @@ import { NavRail } from "../components/NavRail";
 import { AIResponseCard } from "../components/AIResponseCard";
 import { SourcePanel } from "../components/SourcePanel";
 import { Icon } from "../components/Icon";
+import { useSpeech, stripCitations } from "../hooks/useSpeech";
 
 interface Props {
   documentId: string | null;
@@ -29,7 +30,9 @@ export function ChatPage({ documentId, documentName, onNavigate }: Props) {
   const [sending, setSending] = useState(false);
   const [useRerank, setUseRerank] = useState(false);
   const [activeCitation, setActiveCitation] = useState<Citation | null>(null);
+  const [autoSpeak, setAutoSpeak] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const speech = useSpeech();
 
   useEffect(() => {
     setMessages([]);
@@ -58,8 +61,8 @@ export function ChatPage({ documentId, documentName, onNavigate }: Props) {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages]);
 
-  async function send() {
-    const question = input.trim();
+  async function send(textArg?: string) {
+    const question = (textArg ?? input).trim();
     if (!question || sending || !documentId) return;
     setInput("");
     setSending(true);
@@ -78,6 +81,7 @@ export function ChatPage({ documentId, documentName, onNavigate }: Props) {
             : msg,
         ),
       );
+      if (autoSpeak) speech.speak(stripCitations(res.answer));
     } catch (e) {
       setMessages((m) =>
         m.map((msg) =>
@@ -105,19 +109,37 @@ export function ChatPage({ documentId, documentName, onNavigate }: Props) {
               </span>
             )}
           </div>
-          <label className="flex cursor-pointer select-none items-center gap-2 text-sm text-on-surface-variant">
-            <Icon name="tune" size={16} className={useRerank ? "text-primary" : ""} />
-            Rerank
-            <button
-              type="button"
-              role="switch"
-              aria-checked={useRerank}
-              onClick={() => setUseRerank((v) => !v)}
-              className={`relative h-5 w-9 rounded-full transition-colors ${useRerank ? "bg-primary" : "bg-surface-container"}`}
-            >
-              <span className={`absolute top-0.5 h-4 w-4 rounded-full bg-surface shadow transition-all ${useRerank ? "left-[18px]" : "left-0.5"}`} />
-            </button>
-          </label>
+          <div className="flex items-center gap-5">
+            {speech.ttsSupported && (
+              <button
+                type="button"
+                onClick={() => {
+                  if (speech.speaking) speech.stopSpeaking();
+                  setAutoSpeak((v) => !v);
+                }}
+                title="Tự động đọc câu trả lời"
+                className={`flex items-center gap-1.5 text-sm transition-colors ${
+                  autoSpeak ? "text-primary" : "text-on-surface-variant hover:text-on-surface"
+                }`}
+              >
+                <Icon name={autoSpeak ? "volume_up" : "volume_off"} size={18} fill={autoSpeak} />
+                Đọc
+              </button>
+            )}
+            <label className="flex cursor-pointer select-none items-center gap-2 text-sm text-on-surface-variant">
+              <Icon name="tune" size={16} className={useRerank ? "text-primary" : ""} />
+              Rerank
+              <button
+                type="button"
+                role="switch"
+                aria-checked={useRerank}
+                onClick={() => setUseRerank((v) => !v)}
+                className={`relative h-5 w-9 rounded-full transition-colors ${useRerank ? "bg-primary" : "bg-surface-container"}`}
+              >
+                <span className={`absolute top-0.5 h-4 w-4 rounded-full bg-surface shadow transition-all ${useRerank ? "left-[18px]" : "left-0.5"}`} />
+              </button>
+            </label>
+          </div>
         </header>
 
         {!documentId ? (
@@ -162,10 +184,36 @@ export function ChatPage({ documentId, documentName, onNavigate }: Props) {
 
             <div className="bg-gradient-to-t from-background to-transparent p-8">
               <div className="mx-auto max-w-[800px]">
+                {speech.listening && (
+                  <p className="mb-2 flex items-center gap-2 text-sm text-primary">
+                    <Icon name="graphic_eq" size={16} /> Đang nghe… hãy nói câu hỏi của bạn.
+                  </p>
+                )}
+                {speech.error && (
+                  <p className="mb-2 flex items-center gap-2 text-sm text-error">
+                    <Icon name="mic_off" size={16} /> {speech.error}
+                  </p>
+                )}
                 <div className="flex items-end rounded-2xl border border-outline-variant bg-surface p-2 shadow-lg transition-all focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10">
-                  <button aria-label="Đính kèm" className="p-3 text-on-surface-variant transition-colors hover:text-primary">
-                    <Icon name="attach_file" size={20} />
-                  </button>
+                  {speech.sttSupported && (
+                    <button
+                      type="button"
+                      aria-label="Nói câu hỏi"
+                      title="Nhấn để nói (tiếng Việt)"
+                      onClick={() =>
+                        speech.listening
+                          ? speech.stopListening()
+                          : speech.startListening((t) => send(t))
+                      }
+                      className={`m-1 flex h-9 w-9 items-center justify-center rounded-lg transition-colors ${
+                        speech.listening
+                          ? "animate-pulse bg-error/10 text-error"
+                          : "text-on-surface-variant hover:bg-surface-container hover:text-primary"
+                      }`}
+                    >
+                      <Icon name={speech.listening ? "graphic_eq" : "mic"} size={20} />
+                    </button>
+                  )}
                   <textarea
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
@@ -180,7 +228,7 @@ export function ChatPage({ documentId, documentName, onNavigate }: Props) {
                     className="max-h-48 flex-1 resize-none border-none bg-transparent px-2 py-3 text-body-md text-on-surface outline-none placeholder:text-outline"
                   />
                   <button
-                    onClick={send}
+                    onClick={() => send()}
                     disabled={!input.trim() || sending}
                     aria-label="Gửi"
                     className="flex h-10 w-10 items-center justify-center rounded-lg bg-navy text-on-navy transition-all hover:bg-navy-soft active:scale-95 disabled:opacity-40"
