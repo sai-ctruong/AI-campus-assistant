@@ -12,7 +12,7 @@ from app.rag.retriever import invalidate_bm25_cache
 
 router = APIRouter(prefix="/documents", tags=["documents"])
 
-_ALLOWED_EXT = {".pdf": "pdf", ".ipynb": "notebook"}
+_ALLOWED_EXT = {".pdf": "pdf", ".ipynb": "notebook", ".docx": "docx"}
 
 def _doc_dir(document_id: str) -> str:
     return os.path.join(settings.upload_dir, document_id)

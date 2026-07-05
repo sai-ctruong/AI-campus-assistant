@@ -1,0 +1,14 @@
+# Bản requirements nhẹ cho deploy (free/small tier).
+# BỎ torch + sentence-transformers (~2GB) → tính năng rerank tự tắt (generator.py fallback).
+# Dùng bản đầy đủ requirements.txt khi chạy local nếu muốn có rerank.
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+python-dotenv==1.0.1
+pydantic-settings==2.5.2
+google-genai==1.47.0
+chromadb==0.5.20
+pypdf==5.0.1
+python-docx==1.1.2
+nbformat==5.10.4
+rank-bm25==0.2.2
+python-multipart==0.0.12

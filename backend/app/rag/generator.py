@@ -38,8 +38,11 @@ class RagAnswer:
     found_answer: bool
 
 def _chunk_location(meta: dict) -> str:
-    if meta.get("source_type") == "notebook":
+    stype = meta.get("source_type")
+    if stype == "notebook":
         return f"cell {meta.get('cell_index')} ({meta.get('cell_type')})"
+    if stype == "docx":
+        return f"phần {meta.get('section_index', 0) + 1}"
     return f"trang {meta.get('page_number')}"
 
 def _format_context(chunks: list[RetrievedChunk]) -> str:
@@ -64,11 +67,16 @@ def generate_answer(
     use_rerank: bool = True,
 ) -> RagAnswer:
     # 1. Retrieve (hybrid); rerank tùy chọn (cần sentence-transformers/torch).
+    #    Nếu môi trường deploy không cài torch → tự bỏ qua rerank thay vì crash.
+    chunks = None
     if use_rerank:
-        from app.rag.reranker import rerank
-        candidates = hybrid_retrieve(query, top_k=20, document_id=document_id)
-        chunks = rerank(query, candidates, top_k=top_k)
-    else:
+        try:
+            from app.rag.reranker import rerank
+            candidates = hybrid_retrieve(query, top_k=20, document_id=document_id)
+            chunks = rerank(query, candidates, top_k=top_k)
+        except ImportError:
+            chunks = None  # torch không có → fallback hybrid bên dưới
+    if chunks is None:
         chunks = hybrid_retrieve(query, top_k=top_k, document_id=document_id)
 
     if not chunks:

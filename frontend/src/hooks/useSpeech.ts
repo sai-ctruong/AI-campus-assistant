@@ -30,11 +30,7 @@ function errorMessage(code: string): string {
   }
 }
 
-/**
- * Voice mode tiếng Việt bằng Web Speech API của trình duyệt.
- * STT: SpeechRecognition (vi-VN). TTS: speechSynthesis (vi-VN).
- * Chỉ chạy Chrome/Edge, cần https hoặc localhost + quyền mic + mạng.
- */
+// Voice mode tiếng Việt qua Web Speech API (Chrome/Edge, cần https/localhost + mic).
 export function useSpeech() {
   const [listening, setListening] = useState(false);
   const [speaking, setSpeaking] = useState(false);

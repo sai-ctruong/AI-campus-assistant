@@ -56,8 +56,8 @@ export function LibraryPage({ onOpenDoc }: Props) {
 
   async function handleFile(file: File | undefined) {
     if (!file) return;
-    if (!/\.(pdf|ipynb)$/i.test(file.name)) {
-      setError("Chỉ nhận file .pdf hoặc .ipynb");
+    if (!/\.(pdf|ipynb|docx)$/i.test(file.name)) {
+      setError("Chỉ nhận file .pdf, .docx hoặc .ipynb");
       return;
     }
     setError(null);
@@ -96,8 +96,8 @@ export function LibraryPage({ onOpenDoc }: Props) {
             chọn file
           </button>
         </p>
-        <p className="mt-1 text-sm text-outline">Hỗ trợ PDF, .ipynb (Tối đa 50MB)</p>
-        <input ref={inputRef} type="file" accept=".pdf,.ipynb" className="hidden" onChange={(e) => handleFile(e.target.files?.[0])} />
+        <p className="mt-1 text-sm text-outline">Hỗ trợ PDF, Word (.docx), Jupyter (.ipynb) — tối đa 50MB</p>
+        <input ref={inputRef} type="file" accept=".pdf,.docx,.ipynb" className="hidden" onChange={(e) => handleFile(e.target.files?.[0])} />
         {error && <p className="mt-3 text-sm text-error">{error}</p>}
       </div>
 
@@ -123,7 +123,7 @@ export function LibraryPage({ onOpenDoc }: Props) {
                     onClick={() => onOpenDoc(doc.id, doc.filename)}
                     className="flex h-28 w-full items-center justify-center bg-surface-container disabled:cursor-not-allowed"
                   >
-                    <Icon name={doc.source_type === "notebook" ? "code" : "picture_as_pdf"} size={40} className="text-primary" />
+                    <Icon name={doc.source_type === "notebook" ? "code" : doc.source_type === "docx" ? "article" : "picture_as_pdf"} size={40} className="text-primary" />
                   </button>
                   <div className="p-4">
                     <h4 className="truncate font-semibold text-on-surface">{doc.filename}</h4>

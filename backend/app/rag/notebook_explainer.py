@@ -1,8 +1,4 @@
-"""Phase 9: giải thích từng cell của notebook bằng Gemini structured output.
-
-Đưa toàn bộ notebook (các cell theo thứ tự) vào 1 lần gọi để LLM thấy ngữ cảnh
-biến/hàm định nghĩa ở cell trước — thay vì giải thích từng cell cô lập.
-"""
+"""Giải thích từng code cell của notebook (đưa cả notebook vào 1 lần gọi để giữ ngữ cảnh)."""
 from typing import Optional
 from pydantic import BaseModel
 from google import genai

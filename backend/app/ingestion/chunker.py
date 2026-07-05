@@ -40,6 +40,24 @@ def chunk_pdf_pages(pages, document_id: str, source_file: str) -> list[Chunk]:
             ))
     return chunks
 
+def chunk_docx_text(text: str, document_id: str, source_file: str) -> list[Chunk]:
+    if not text.strip():
+        return []
+    chunks: list[Chunk] = []
+    for idx, sub_text in enumerate(_split_fixed_size(text, chunk_size=500, overlap=50)):
+        chunks.append(Chunk(
+            id=str(uuid.uuid4()),
+            text=sub_text,
+            metadata={
+                "document_id": document_id,
+                "source_file": source_file,
+                "section_index": idx,
+                "chunk_index": idx,
+                "source_type": "docx",
+            },
+        ))
+    return chunks
+
 def chunk_notebook_cells(cells, document_id: str, source_file: str) -> list[Chunk]:
     chunks: list[Chunk] = []
     for cell in cells:

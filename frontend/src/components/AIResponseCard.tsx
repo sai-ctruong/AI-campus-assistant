@@ -8,11 +8,7 @@ interface Props {
   onCitationClick: (citation: Citation) => void;
 }
 
-/**
- * Chèn chip vào giữa text: tách content theo regex bắt cả marker đơn "[1]" lẫn
- * gộp "[1, 2, 3]" (LLM đôi khi gộp). Mỗi số → 1 chip bấm được khớp citation.ref.
- * Không dùng markdown parser vì chỉ có 1 loại phần tử động là marker trích dẫn.
- */
+// Tách content theo regex bắt cả "[1]" lẫn "[1, 2, 3]" → mỗi số thành 1 chip khớp citation.ref.
 function renderContent(content: string, citations: Citation[], onClick: (c: Citation) => void) {
   return content.split(/(\[[\d,\s]+\])/g).map((segment, i) => {
     const match = segment.match(/^\[([\d,\s]+)\]$/);

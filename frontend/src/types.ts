@@ -96,14 +96,3 @@ export interface ExplainResponse {
   cells: NotebookCell[];
   explanations: CellExplanation[];
 }
-
-/** Tin nhắn hiển thị trong khung chat (client-side). */
-export interface ChatMessage {
-  role: "user" | "assistant";
-  text: string;
-  citations?: Citation[];
-  foundAnswer?: boolean;
-  pending?: boolean;
-  error?: boolean;
-  animate?: boolean; // true = message mới → chạy hiệu ứng gõ chữ
-}

@@ -1,7 +1,8 @@
 import os
 from app.ingestion.pdf_parser import parse_pdf
 from app.ingestion.notebook_parser import parse_notebook
-from app.ingestion.chunker import chunk_pdf_pages, chunk_notebook_cells
+from app.ingestion.docx_parser import parse_docx
+from app.ingestion.chunker import chunk_pdf_pages, chunk_notebook_cells, chunk_docx_text
 from app.embedding.embedder import embed_batch
 from app.db.chroma_client import add_chunks
 
@@ -15,6 +16,9 @@ def ingest_document(file_path: str, document_id: str) -> int:
     elif ext == ".ipynb":
         cells = parse_notebook(file_path)
         chunks = chunk_notebook_cells(cells, document_id=document_id, source_file=filename)
+    elif ext == ".docx":
+        text = parse_docx(file_path)
+        chunks = chunk_docx_text(text, document_id=document_id, source_file=filename)
     else:
         raise ValueError(f"Định dạng file không được hỗ trợ: {ext}")
 
