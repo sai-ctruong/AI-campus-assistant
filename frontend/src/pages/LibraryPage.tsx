@@ -155,7 +155,7 @@ export function LibraryPage({ onOpenDoc }: Props) {
       {/* Promo banner */}
       <div className="flex items-center gap-5 rounded-2xl bg-navy px-6 py-5 text-on-navy">
         <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-navy-soft text-primary">
-          <Icon name="auto_awesome" size={24} fill />
+          <Icon name="find_in_page" size={24} />
         </span>
         <div className="flex-1">
           <h4 className="font-semibold">Phân tích tài liệu bằng AI</h4>

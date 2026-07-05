@@ -36,9 +36,9 @@ export function AIResponseCard({ content, citations, onCitationClick }: Props) {
   return (
     <div className="rounded-xl border border-outline-variant bg-surface p-6 shadow-[0_1px_3px_rgba(24,35,56,0.08)]">
       <div className="mb-4 flex items-center gap-2">
-        <Icon name="auto_awesome" size={22} fill className="text-secondary" />
+        <Icon name="school" size={20} fill className="text-secondary" />
         <span className="text-label-md font-semibold uppercase tracking-wider text-secondary">
-          AI Assistant
+          Trợ lý
         </span>
       </div>
 

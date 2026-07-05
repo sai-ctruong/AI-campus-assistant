@@ -43,6 +43,7 @@ export default function App() {
       active={view}
       title={TITLES[view]}
       onNavigate={setView}
+      onOpenDoc={openDoc}
       padded={view !== "notebook"}
       onUpload={() => setView("library")}
     >

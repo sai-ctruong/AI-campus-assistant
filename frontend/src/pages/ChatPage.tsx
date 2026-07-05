@@ -106,7 +106,7 @@ export function ChatPage({ documentId, documentName, onNavigate }: Props) {
             )}
           </div>
           <label className="flex cursor-pointer select-none items-center gap-2 text-sm text-on-surface-variant">
-            <Icon name="my_location" size={16} className={useRerank ? "text-primary" : ""} />
+            <Icon name="tune" size={16} className={useRerank ? "text-primary" : ""} />
             Rerank
             <button
               type="button"
