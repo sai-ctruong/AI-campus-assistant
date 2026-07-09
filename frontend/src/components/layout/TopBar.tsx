@@ -3,10 +3,11 @@ import { Icon } from "../Icon";
 interface Props {
   title: string;
   onUpload?: () => void;
+  uploading?: boolean;
   onMenuClick?: () => void;
 }
 
-export function TopBar({ title, onUpload, onMenuClick }: Props) {
+export function TopBar({ title, onUpload, uploading, onMenuClick }: Props) {
   return (
     <header className="flex h-16 shrink-0 items-center gap-3 border-b border-outline-variant bg-surface px-4 md:gap-6 md:px-8">
       <button
@@ -35,10 +36,11 @@ export function TopBar({ title, onUpload, onMenuClick }: Props) {
         <button
           type="button"
           onClick={onUpload}
-          className="flex shrink-0 items-center gap-2 rounded-lg bg-primary px-3 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover md:px-4"
+          disabled={uploading}
+          className="flex shrink-0 items-center gap-2 rounded-lg bg-primary px-3 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60 md:px-4"
         >
-          <Icon name="upload" size={18} />
-          <span className="hidden sm:inline">Upload</span>
+          <Icon name={uploading ? "progress_activity" : "upload"} size={18} className={uploading ? "animate-spin" : ""} />
+          <span className="hidden sm:inline">{uploading ? "Đang tải…" : "Upload"}</span>
         </button>
 
         <button className="shrink-0 text-on-surface-variant transition-colors hover:text-on-surface">

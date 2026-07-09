@@ -24,7 +24,7 @@ function errorMessage(code: string): string {
     case "audio-capture":
       return "Không tìm thấy micro.";
     case "network":
-      return "Lỗi mạng — nhận dạng giọng nói cần kết nối internet.";
+      return "Trình duyệt này không dùng được nhận dạng giọng nói. Hãy mở bằng Google Chrome chính hãng (Edge/Brave/Cốc Cốc thường bị chặn).";
     default:
       return "";
   }

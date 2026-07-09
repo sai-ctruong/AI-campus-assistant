@@ -5,6 +5,10 @@ import { Icon } from "../components/Icon";
 
 interface Props {
   onOpenDoc: (id: string, name: string) => void;
+  /** Tăng giá trị này để buộc làm mới danh sách (vd. sau khi upload từ TopBar). */
+  refreshSignal?: number;
+  /** Lỗi upload đến từ nút Upload toàn cục trên TopBar. */
+  externalError?: string | null;
 }
 
 function statusBadge(doc: DocumentInfo) {
@@ -20,7 +24,7 @@ function statusBadge(doc: DocumentInfo) {
   return <span className="text-xs text-on-surface-variant">{doc.chunk_count} đoạn</span>;
 }
 
-export function LibraryPage({ onOpenDoc }: Props) {
+export function LibraryPage({ onOpenDoc, refreshSignal = 0, externalError = null }: Props) {
   const [documents, setDocuments] = useState<DocumentInfo[]>([]);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -39,7 +43,12 @@ export function LibraryPage({ onOpenDoc }: Props) {
 
   useEffect(() => {
     refresh();
-  }, [refresh]);
+  }, [refresh, refreshSignal]);
+
+  // Đồng bộ lỗi upload từ nút Upload toàn cục (TopBar).
+  useEffect(() => {
+    if (externalError) setError(externalError);
+  }, [externalError]);
 
   useEffect(() => {
     const processing = documents.some((d) => d.status === "processing");

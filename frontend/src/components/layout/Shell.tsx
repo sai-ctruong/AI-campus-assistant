@@ -10,10 +10,11 @@ interface Props {
   children: ReactNode;
   padded?: boolean;
   onUpload?: () => void;
+  uploading?: boolean;
 }
 
 /** Khung chung: Sidebar (drawer trên mobile) + TopBar + vùng nội dung. */
-export function Shell({ active, title, onNavigate, onOpenDoc, children, padded = true, onUpload }: Props) {
+export function Shell({ active, title, onNavigate, onOpenDoc, children, padded = true, onUpload, uploading }: Props) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -40,7 +41,7 @@ export function Shell({ active, title, onNavigate, onOpenDoc, children, padded =
       )}
 
       <div className="flex h-full min-w-0 flex-1 flex-col overflow-hidden">
-        <TopBar title={title} onUpload={onUpload} onMenuClick={() => setOpen(true)} />
+        <TopBar title={title} onUpload={onUpload} uploading={uploading} onMenuClick={() => setOpen(true)} />
         <main className={`flex-1 overflow-y-auto bg-background ${padded ? "px-4 py-5 md:px-8 md:py-7" : ""}`}>
           {children}
         </main>
